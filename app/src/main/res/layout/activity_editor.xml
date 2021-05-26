@@ -17,9 +17,6 @@
         android:layout_centerInParent="true"
         android:src="@drawable/photo" />
 
-
-
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,6 +27,16 @@
         android:text="Tap to Add an Image"
         android:textStyle="bold"
         android:layout_below="@+id/profile_image" />
+
+    <Button
+        android:id="@+id/btn_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="4dp"
+        android:text="Ligar"
+        android:onClick="makeCall"
+        android:layout_below="@+id/textHint" />
 
 
     <EditText

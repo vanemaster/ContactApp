@@ -13,12 +13,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +31,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import static android.Manifest.permission.CALL_PHONE;
 
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -180,7 +183,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // because we want to hide delete option when we are adding a new contact
         super.onPrepareOptionsMenu(menu);
         if (mCurrentContactUri == null) {
             MenuItem item = (MenuItem) menu.findItem(R.id.delete);
@@ -208,10 +210,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             case android.R.id.home:
                 if (!mContactHasChanged) {
 
-                    // we will be displayed a dialog asking us to discard or keeping editing when we press back in case
-                    // we have not finished filling up some field
-
-                    NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                   NavUtils.navigateUpFromSameTask(EditorActivity.this);
                     return true;
 
                 }
@@ -234,14 +233,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     private boolean saveContact() {
 
-        // last step of this activity we have to create savecontact method
-
-        String name = mNameEditText.getText().toString().trim();
+         String name = mNameEditText.getText().toString().trim();
         String email = mEmailEditText.getText().toString().trim();
         String phone = mNumberEditText.getText().toString().trim();
 
-        // what if we have not entered any text in field and we click save it will crash so how to save it from crashing
-        // when fields are empty
         if (mCurrentContactUri == null && TextUtils.isEmpty(name)
         && TextUtils.isEmpty(email) && TextUtils.isEmpty(phone) && mType == Contract.ContactEntry.TYPEOFCONTACT_PERSONAL && mPhotoUri == null) {
 
@@ -395,85 +390,59 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     private void showUnsavedChangesDialog(
             DialogInterface.OnClickListener discardButtonClickListener) {
-        // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the positive and negative buttons on the dialog.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.unsaved_changes_dialog_msg);
         builder.setPositiveButton(R.string.discard, discardButtonClickListener);
         builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Keep editing" button, so dismiss the dialog
-                // and continue editing the product.
                 if (dialog != null) {
                     dialog.dismiss();
                 }
             }
         });
 
-        // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 
-    /**
-     * Prompt the user to confirm that they want to delete this product.
-     */
     private void showDeleteConfirmationDialog() {
-        // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the positive and negative buttons on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.delete_dialog_msg);
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete the product.
                 deleteProduct();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the product.
                 if (dialog != null) {
                     dialog.dismiss();
                 }
             }
         });
 
-        // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 
-    /**
-     * Perform the deletion of the product in the database.
-     */
     private void deleteProduct() {
-        // Only perform the delete if this is an existing product.
         if (mCurrentContactUri != null) {
-            // Call the ContentResolver to delete the product at the given content URI.
-            // Pass in null for the selection and selection args because the mCurrentProductUri
-            // content URI already identifies the product that we want.
             int rowsDeleted = getContentResolver().delete(mCurrentContactUri, null, null);
 
-            // Show a toast message depending on whether or not the delete was successful.
             if (rowsDeleted == 0) {
-                // If no rows were deleted, then there was an error with the delete.
                 Toast.makeText(this, getString(R.string.editor_delete_product_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
-                // Otherwise, the delete was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_delete_product_successful),
                         Toast.LENGTH_SHORT).show();
             }
         }
 
-        // Close the activity
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        // If the product hasn't changed, continue with handling back button press
         if (!mContactHasChanged) {
             super.onBackPressed();
             return;
@@ -483,13 +452,28 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // User clicked "Discard" button, close the current activity.
                         finish();
                     }
                 };
 
-        // Show dialog that there are unsaved changes
         showUnsavedChangesDialog(discardButtonClickListener);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void makeCall(View view) {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        EditText mEdit = (EditText)findViewById(R.id.phoneEditText);
+        String phone_num = mEdit.getText().toString();
+        String make_call = "tel:"+phone_num;
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            callIntent.setData(Uri.parse(make_call));
+            startActivity(callIntent);
+        } else {
+            requestPermissions(new String[]{CALL_PHONE}, 1);
+        }
+
+
     }
 }
 

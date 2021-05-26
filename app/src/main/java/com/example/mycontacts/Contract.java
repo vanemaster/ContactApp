@@ -31,9 +31,9 @@ public final class Contract {
         public static final String COLUMN_TYPEOFCONTACT = "type";
 
 
-        public static final String TYPEOFCONTACT_WORK = "Work";
-        public static final String TYPEOFCONTACT_HOME = "Home";
-        public static final String TYPEOFCONTACT_PERSONAL = "Personal";
+        public static final String TYPEOFCONTACT_WORK = "Trabalho";
+        public static final String TYPEOFCONTACT_HOME = "Casa";
+        public static final String TYPEOFCONTACT_PERSONAL = "Pessoal";
 
         public static boolean isValidType (String type) {
             if (type == TYPEOFCONTACT_HOME || type == TYPEOFCONTACT_PERSONAL || type == TYPEOFCONTACT_WORK) {

@@ -12,8 +12,11 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,13 +26,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public Adapter mAdapter;
     public static final  int CONTACTLOADER = 0;
-
+    final SwipeDetector swipeDetector = new SwipeDetector();
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -43,20 +47,33 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ListView listView = findViewById(R.id.list);
         mAdapter = new Adapter(this, null);
         listView.setAdapter(mAdapter);
+        listView.setOnTouchListener(swipeDetector);
 
-//        // whenever we press a listview for updating
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
-//                Uri newUri = ContentUris.withAppendedId(Contract.ContactEntry.CONTENT_URI, id);
-//                intent.setData(newUri);
-//                startActivity(intent);
-//
-//            }
-//        });
-
-        listView.setOnTouchListener(new MyOnSwipeTouchListener(this));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (swipeDetector.swipeDetected()) {
+                    Log.i(String.valueOf(id),"got swipe");
+                    if (swipeDetector.getAction() == SwipeDetector.Action.LR) {
+                        Button button_remove = (Button) findViewById(R.id.btn_remove);
+                        button_remove.setVisibility(View.VISIBLE);
+                        Button button_edit = (Button) findViewById(R.id.btn_edit);
+                        button_edit.setVisibility(View.GONE);
+                    }
+                    if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
+                        Button button_remove = (Button) findViewById(R.id.btn_remove);
+                        button_remove.setVisibility(View.GONE);
+                        Button button_edit = (Button) findViewById(R.id.btn_edit);
+                        button_edit.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+                    Uri newUri = ContentUris.withAppendedId(Contract.ContactEntry.CONTENT_URI, id);
+                    intent.setData(newUri);
+                    startActivity(intent);
+                }
+            }
+        });
 
         // get the loader running
         getLoaderManager().initLoader(CONTACTLOADER, null, this);
@@ -78,32 +95,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 null,
                 null);
     }
-
-    private class MyOnSwipeTouchListener extends OnSwipeTouchListener {
-        public MyOnSwipeTouchListener(Context c) {
-            super(c);
-        }
-
-        @Override
-        public void onSwipeBottom() {
-            Toast.makeText(getApplicationContext(),"Swiped down!",Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onSwipeLeft() {
-            Toast.makeText(getApplicationContext(),"Swiped left!",Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onSwipeRight() {
-            Toast.makeText(getApplicationContext(),"Swiped right!",Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onSwipeTop() {
-            Toast.makeText(getApplicationContext(),"Swiped up!",Toast.LENGTH_SHORT).show();
-        }
-    };
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
