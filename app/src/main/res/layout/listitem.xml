@@ -16,13 +16,6 @@
         android:gravity="right"
         android:layout_margin="8dp" />
 
-    <Button
-        android:id="@+id/btn_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Editar"
-        android:visibility="gone" />
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,13 +62,5 @@
         android:textSize="16sp"
         android:textStyle="italic"
         android:layout_marginTop="2dp"/>
-
-    <Button
-        android:id="@+id/btn_remove"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Remover"
-        android:onClick="showDeleteConfirmationDialog"
-        android:visibility="gone" />
 
 </RelativeLayout>

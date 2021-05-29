@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -37,9 +38,9 @@ import static android.Manifest.permission.CALL_PHONE;
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     EditText mNameEditText, mNumberEditText, mEmailEditText;
+    Button mMakeCall;
     private Uri mPhotoUri;
     private Uri mCurrentContactUri;
-    private String deleteContact;
     private String mType = Contract.ContactEntry.TYPEOFCONTACT_PERSONAL;
     ImageView mPhoto;
     private boolean mContactHasChanged = false;
@@ -64,6 +65,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         Intent intent = getIntent();
         mCurrentContactUri = intent.getData();
 
+        mMakeCall = findViewById(R.id.btn_call);
         mNameEditText = findViewById(R.id.nameEditText);
         mNumberEditText = findViewById(R.id.phoneEditText);
         mEmailEditText = findViewById(R.id.emailEditText);
@@ -71,12 +73,17 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mSpinner = findViewById(R.id.spinner);
 
         if (mCurrentContactUri == null) {
+            mMakeCall.setVisibility(View.INVISIBLE);
             mPhoto.setImageResource(R.drawable.photo);
+
             setTitle("Adicionar Contato");
             invalidateOptionsMenu();
 
         } else {
-            if (deleteContact != ""){
+
+            String deleteContact = getIntent().getStringExtra("DELETE_CONTACT");
+
+            if (deleteContact != null){
                 showDeleteConfirmationDialog();
             }else{
                 setTitle("Editar Contato");

@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (swipeDetector.swipeDetected()) {
                     Log.i(String.valueOf(id),"got swipe");
                     if (swipeDetector.getAction() == SwipeDetector.Action.LR) {
+                        Log.i(String.valueOf(id),"editar");
                         Intent intent = new Intent(MainActivity.this, EditorActivity.class);
                         Uri newUri = ContentUris.withAppendedId(Contract.ContactEntry.CONTENT_URI, id);
                         intent.setData(newUri);
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         Intent intent = new Intent(MainActivity.this, EditorActivity.class);
                         Uri newUri = ContentUris.withAppendedId(Contract.ContactEntry.CONTENT_URI, id);
                         intent.setData(newUri);
-                        intent.putExtra("deleteContact","deletar");
+                        intent.putExtra("DELETE_CONTACT","deletar");
                         startActivity(intent);
                     }
                 }
