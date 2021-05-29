@@ -5,17 +5,12 @@ import android.provider.BaseColumns;
 
 public final class Contract {
 
-    // empty constructor so no one else can use it
-    public Contract() {
+     public Contract() {
 
     }
 
-    // creating content authority, baseuri and path
-
-    // your package name insert in contentauthority
     public static final String CONTENT_AUTHORITY = "com.example.mycontacts";
     public static final Uri BASE_URI = Uri.parse("content://"+ CONTENT_AUTHORITY);
-    // path name should be similar to your table name
     public static final String PATH_CONTACTS = "mycontacts";
 
     public static abstract class ContactEntry implements BaseColumns{

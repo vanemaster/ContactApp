@@ -39,6 +39,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     EditText mNameEditText, mNumberEditText, mEmailEditText;
     private Uri mPhotoUri;
     private Uri mCurrentContactUri;
+    private String deleteContact;
     private String mType = Contract.ContactEntry.TYPEOFCONTACT_PERSONAL;
     ImageView mPhoto;
     private boolean mContactHasChanged = false;
@@ -72,13 +73,15 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         if (mCurrentContactUri == null) {
             mPhoto.setImageResource(R.drawable.photo);
             setTitle("Adicionar Contato");
-            // we want to hide delete menu when we are adding a new contact
             invalidateOptionsMenu();
 
         } else {
-            setTitle("Editar Contato");
-            getLoaderManager().initLoader(LOADER, null, this);
-
+            if (deleteContact != ""){
+                showDeleteConfirmationDialog();
+            }else{
+                setTitle("Editar Contato");
+                getLoaderManager().initLoader(LOADER, null, this);
+            }
         }
 
         mNameEditText.setOnTouchListener(mOnTouchListener);
@@ -224,9 +227,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 };
                 showUnsavedChangesDialog(discardButton);
                 return true;
-
-
-
         }
             return super.onOptionsItemSelected(item);
     }
@@ -367,15 +367,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
                 default:
                     mSpinner.setSelection(0);
-
-
-
-
             }
-
         }
-
-
     }
 
     @Override
@@ -405,7 +398,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         alertDialog.show();
     }
 
-    private void showDeleteConfirmationDialog() {
+    public void showDeleteConfirmationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.delete_dialog_msg);
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {

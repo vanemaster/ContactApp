@@ -1,6 +1,5 @@
 package com.example.mycontacts;
 
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -46,12 +45,12 @@ public class SwipeDetector implements View.OnTouchListener {
                 if (Math.abs(deltaX) > MIN_DISTANCE) {
                     // left or right
                     if (deltaX < 0) {
-                        Log.i(logTag, "Swipe Left to Right");
+//                        Log.i(logTag, "Swipe Left to Right");
                         mSwipeDetected = Action.LR;
                         return false;
                     }
                     if (deltaX > 0) {
-                        Log.i(logTag, "Swipe Right to Left");
+//                        Log.i(logTag, "Swipe Right to Left");
                         mSwipeDetected = Action.RL;
                         return false;
                     }
@@ -59,12 +58,12 @@ public class SwipeDetector implements View.OnTouchListener {
                     // detection
                     // top or down
                     if (deltaY < 0) {
-                        Log.i(logTag, "Swipe Top to Bottom");
+//                        Log.i(logTag, "Swipe Top to Bottom");
                         mSwipeDetected = Action.TB;
                         return false;
                     }
                     if (deltaY > 0) {
-                        Log.i(logTag, "Swipe Bottom to Top");
+//                        Log.i(logTag, "Swipe Bottom to Top");
                         mSwipeDetected = Action.BT;
                         return false;
                     }

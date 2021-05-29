@@ -3,24 +3,18 @@ package com.example.mycontacts;
 import android.annotation.SuppressLint;
 import android.app.LoaderManager;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -55,22 +49,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (swipeDetector.swipeDetected()) {
                     Log.i(String.valueOf(id),"got swipe");
                     if (swipeDetector.getAction() == SwipeDetector.Action.LR) {
-                        Button button_remove = (Button) findViewById(R.id.btn_remove);
-                        button_remove.setVisibility(View.VISIBLE);
-                        Button button_edit = (Button) findViewById(R.id.btn_edit);
-                        button_edit.setVisibility(View.GONE);
+                        Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+                        Uri newUri = ContentUris.withAppendedId(Contract.ContactEntry.CONTENT_URI, id);
+                        intent.setData(newUri);
+                        startActivity(intent);
                     }
                     if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
-                        Button button_remove = (Button) findViewById(R.id.btn_remove);
-                        button_remove.setVisibility(View.GONE);
-                        Button button_edit = (Button) findViewById(R.id.btn_edit);
-                        button_edit.setVisibility(View.VISIBLE);
+                        Log.i(String.valueOf(id),"deletar");
+                        Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+                        Uri newUri = ContentUris.withAppendedId(Contract.ContactEntry.CONTENT_URI, id);
+                        intent.setData(newUri);
+                        intent.putExtra("deleContact","deletar");
+                        startActivity(intent);
                     }
-                }else{
-                    Intent intent = new Intent(MainActivity.this, EditorActivity.class);
-                    Uri newUri = ContentUris.withAppendedId(Contract.ContactEntry.CONTENT_URI, id);
-                    intent.setData(newUri);
-                    startActivity(intent);
                 }
             }
         });
