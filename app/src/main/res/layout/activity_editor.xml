@@ -8,23 +8,23 @@
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profile_image"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        android:layout_marginTop="40dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
+        android:layout_marginTop="40dp"
+        android:paddingBottom="20dp"
         android:src="@drawable/photo" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginTop="4dp"
-        android:textSize="15sp"
+        android:layout_marginTop="1dp"
+        android:textSize="13sp"
         android:id="@+id/textHint"
-        android:text="Tap to Add an Image"
+        android:text="Toque para adicionar imagem"
         android:textStyle="bold"
         android:layout_below="@+id/profile_image" />
 
