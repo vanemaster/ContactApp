@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         Intent intent = new Intent(MainActivity.this, EditorActivity.class);
                         Uri newUri = ContentUris.withAppendedId(Contract.ContactEntry.CONTENT_URI, id);
                         intent.setData(newUri);
-                        intent.putExtra("deleContact","deletar");
+                        intent.putExtra("deleteContact","deletar");
                         startActivity(intent);
                     }
                 }
